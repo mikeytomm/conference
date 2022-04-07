@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <form id="paymentForm">
+    {{data}}
+
+<h5>full name of donor</h5>
+<p>{{data.fullname}}</p>
+<h5>ref no</h5>
+<p>{{data.ref}}</p>
+<h5>amt</h5>
+<p>{{data.amt}}</p>
+
+<button type="submit" onclick="payWithPaystack()">pay now</button>
+   </form>
+<script src="https://js.paystack.co/v1/inline.js">
+var paymentForm = document.getElementById('paymentForm');
+paymentForm.addEventListener('submit', payWithPaystack, false);
+function payWithPaystack() {
+  var handler = PaystackPop.setup({
+    key: 'pk_test_8d29b653e772c85d37cf948be2c1279523406fa9', // Replace with your public key
+    email: "{{data.email}}",
+    amount: '{{data.amt}}', // the amount value is multiplied by 100 to convert to the lowest currency unit
+    currency: 'NGN', // Use GHS for Ghana Cedis or USD for US Dollars
+    ref: '{{data.ref}}', // Replace with a reference you generated
+    callback: function(response) {
+      //this happens after the payment is completed successfully
+      var reference = response.reference;
+      alert('Payment complete! Reference: ' + reference);
+      // Make an AJAX call to your server with the reference to verify the transaction
+    },
+    onClose: function() {
+      alert('Transaction was not completed, window closed.');
+    },
+  });
+  handler.openIframe();
+}
+
+
+
+
+
+
+
+</script> 
+</body>
+</html>
